@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+	<div>
+		<h2>Obtain all available services</h2>
+		<form action="#" th:action="@{/servicesInstancesByName}"
+			th:object="${service}" method="get">
+			<input type="text" th:value="${service}" th:field="*{serviceName}">
+			<input type="submit" value="Obtain services instances by name">
+		</form>
+	</div>
+
+	<div>
+		<h2>Call business method on specific instances</h2>
+		<form action="#" th:action="@{/invokeServiceInstance}" th:object="${service}"
+			method="post">
+			<input type="text" th:value="${service}" th:field="*{serviceName}">
+			<input type="text" th:value="${service}" th:field="*{methodName}">
+			<input type="text" th:value="${service}" th:field="*{serviceInstanceIndex}">
+			<input type="submit" value="Invoke instance service">
+		</form>
+
+	</div>
+
+	<div th:if="${info != null}">
+		<h3>Response</h3>
+		<ul>
+			<li th:each="item : ${info}" th:text="${item}"></li>
+		</ul>
+	</div>
+</body>
+</html>
