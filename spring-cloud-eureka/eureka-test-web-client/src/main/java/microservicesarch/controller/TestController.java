@@ -96,14 +96,11 @@ public class TestController {
 	public String invokeServiceInstanceUsingLoadBalancer(@ModelAttribute("service") Service service, RedirectAttributes model) {
 		System.out.println("Executing controller. ServiceName : " + service.toString());
 		List<String> info = new java.util.ArrayList<String>();
-		service.setServiceInstanceIndex(0);
-		URI instanceUri = getInstanceUri(service);
-		if (instanceUri == null) {
-			info.add("Instances 0 does not exists");
-		} else {
-			ResponseEntity<String> response = restTemplate.getForEntity(instanceUri.toString()+"/"+service.getMethodName(),String.class);
-			info.add(response.getBody());
-		}
+	
+		
+		ResponseEntity<String> response = restTemplate.getForEntity("http://micorservice1/doSomeWork",String.class);
+		info.add(response.getBody());
+	
 		
 		model.addFlashAttribute("service", service);
 		model.addFlashAttribute("info", info);
