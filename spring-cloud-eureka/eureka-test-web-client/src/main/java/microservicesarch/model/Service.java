@@ -29,6 +29,13 @@ public class Service {
 		this.serviceInstanceIndex = serviceInstanceIndex;
 	}
 
+	@Override
+	public String toString() {
+		return "Service [serviceName=" + serviceName + ", methodName=" + methodName + ", serviceInstanceIndex="
+				+ serviceInstanceIndex + "]";
+	}
+
+	
 	
 	
 }

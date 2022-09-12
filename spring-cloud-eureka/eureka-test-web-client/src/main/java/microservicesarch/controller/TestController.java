@@ -34,11 +34,14 @@ public class TestController {
 	public String mainForm(Model model) {
 		System.out.println("Executing controller. ");
 		
-		microservicesarch.model.Service service = new microservicesarch.model.Service();
-		service.setServiceName("microservice1");
-		service.setServiceInstanceIndex(0);
-		service.setMethodName("doSomeWork");
-		model.addAttribute("service", service);
+		if (model.getAttribute("service") == null) {
+			microservicesarch.model.Service service = new microservicesarch.model.Service();
+			service.setServiceName("microservice1");
+			service.setServiceInstanceIndex(0);
+			service.setMethodName("doSomeWork");
+			model.addAttribute("service", service);
+		}
+		
 		return "main";
 	}
 	
@@ -63,26 +66,51 @@ public class TestController {
 			}
 		}
 		
-		model.addFlashAttribute("info", info);
+		model.addFlashAttribute("service", service);
+		model.addFlashAttribute("instances", info);
 		return "redirect:/main";
 	}
 	
 	@PostMapping("/invokeServiceInstance")
 	public String invokeServiceInstance(@ModelAttribute("service") Service service, RedirectAttributes model) {
-		System.out.println("Executing controller. ServiceName : " + service.getServiceName());
+		System.out.println("Executing controller. ServiceName : " + service.toString());
 		
 		List<String> info = new java.util.ArrayList<String>();
 		URI instanceUri = getInstanceUri(service);
 		if (instanceUri == null) {
 			info.add("Instances does not exists");
 		} else {
+			//If we allow Spring to instantiate a RestTemplate, it will hava a LoadBalancer intercerptor injected in the instance
+			//Therefore, for testing purpose,  we need to create our instance to avoid that behavior.
+			RestTemplate restTemplate = new RestTemplate();
 			ResponseEntity<String> response = restTemplate.getForEntity(instanceUri.toString()+"/"+service.getMethodName(),String.class);
 			info.add(response.getBody());
 		}
 		
+		model.addFlashAttribute("service", service);
 		model.addFlashAttribute("info", info);
 		return "redirect:/main";
 	}
+	
+	@PostMapping("/invokeServiceInstanceUsingClientLoadBalancer")
+	public String invokeServiceInstanceUsingLoadBalancer(@ModelAttribute("service") Service service, RedirectAttributes model) {
+		System.out.println("Executing controller. ServiceName : " + service.toString());
+		List<String> info = new java.util.ArrayList<String>();
+		service.setServiceInstanceIndex(0);
+		URI instanceUri = getInstanceUri(service);
+		if (instanceUri == null) {
+			info.add("Instances 0 does not exists");
+		} else {
+			ResponseEntity<String> response = restTemplate.getForEntity(instanceUri.toString()+"/"+service.getMethodName(),String.class);
+			info.add(response.getBody());
+		}
+		
+		model.addFlashAttribute("service", service);
+		model.addFlashAttribute("info", info);
+		return "redirect:/main";
+		
+	}
+	
 	
 	private URI getInstanceUri(Service service) {
 		List<ServiceInstance> instances = discoveryClient.getInstances(service.getServiceName());
