@@ -33,13 +33,14 @@ public class Caller3Service {
 	    registry
 	        .retry(RETRY_NAME)
 	        .getEventPublisher()
-	        .onRetry(System.out::println);
+	        .onRetry(s -> System.out.println("Error: " + s));
 	}
 	
 	
 	@LoadBalanced
 	@Retry(name = RETRY_NAME, fallbackMethod = "fallbackMethodRetry")
 	public List<String> callServiceWithResilience4jRetry(ServiceInfo service) {
+		System.out.println("Executing callServiceWithResilience4jRetry ");
 		List<String> info = new java.util.ArrayList<String>();
 		ResponseEntity<String> response = restTemplate.getForEntity("http://microservice1/doSomeWork",String.class);
 		info.add(response.getBody());
@@ -47,9 +48,11 @@ public class Caller3Service {
 		return info;
 	}
 	
-	public String fallbackMethodRetry(@ModelAttribute("service") ServiceInfo service, RedirectAttributes model, RuntimeException e) {
+	public List<String> fallbackMethodRetry(ServiceInfo service, RuntimeException e) {
 		System.out.println("It was ipossible to call service. Max retry attempts reached."); 
-		return "error";
+		List<String> info = new java.util.ArrayList<String>();
+		info.add("error");
+		return info;
 	}
 
 	
