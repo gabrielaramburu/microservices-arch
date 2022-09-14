@@ -1,6 +1,6 @@
 package microservicesarch.model;
 
-public class Service {
+public class ServiceInfo {
 	private String serviceName;
 	private String methodName;
 	private Integer serviceInstanceIndex;

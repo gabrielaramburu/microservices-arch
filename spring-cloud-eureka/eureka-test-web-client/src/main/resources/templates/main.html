@@ -26,7 +26,7 @@
 		<form action="#" th:action="@{/invokeServiceInstance}"
 			th:object="${service}" method="post">
 			<input type="text" th:value="${service}" th:field="*{serviceName}">
-			<input type="text" th:value="${service}" th:field="*{methodName}">
+			<!--  <input type="text" th:value="${service}" th:field="*{methodName}">  -->
 			<input type="text" th:value="${service}" th:field="*{serviceInstanceIndex}"> 
 			<input type="submit" value="Invoke instance service">
 		</form>
@@ -35,13 +35,25 @@
 
 
 	<div>
-		<h2>Call business method using client load balancer</h2>
+		<h2>Call business method using client load balancer with manual retry implementation</h2>
 		<form action="#" th:action="@{/invokeServiceInstanceUsingClientLoadBalancer}"
 			th:object="${service}" method="post">
 			<input type="text" th:value="${service}" th:field="*{serviceName}">
-			<input type="text" th:value="${service}" th:field="*{methodName}">
+				<!--  <input type="text" th:value="${service}" th:field="*{methodName}">  -->
 			
 			<input type="submit" value="Invoke instance service">
+		</form>
+
+	</div>
+	
+	<div>
+		<h2>Call business method using client load balancer with Resilience4j @Retry </h2>
+		<form action="#" th:action="@{/invokeInstanceUsingLoadBalancerAndRetry}"
+			th:object="${service}" method="post">
+			<input type="text" th:value="${service}" th:field="*{serviceName}">
+				<!--  <input type="text" th:value="${service}" th:field="*{methodName}">  -->
+			
+			<input type="submit" value="Invoke instance service @Retry">
 		</form>
 
 	</div>
