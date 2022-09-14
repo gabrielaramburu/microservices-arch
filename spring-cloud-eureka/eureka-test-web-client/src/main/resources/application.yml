@@ -1,0 +1,8 @@
+resilience4j:
+  retry:
+    instances:
+      loadBalancerRetry:
+        maxRetryAttempts: 3
+        waitDuration: 1s
+        retryExceptions:
+          - java.lang.Exception

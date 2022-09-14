@@ -55,7 +55,7 @@ public class TestController {
 	
 	
 	@GetMapping("/servicesInstancesByName")
-	public String obtainServiceInstances(@ModelAttribute("service") ServiceInfo service, RedirectAttributes model) {
+	public String servicesInstancesByName(@ModelAttribute("service") ServiceInfo service, RedirectAttributes model) {
 		
 		List<String> info = caller1Service.obtainServiceInstances(service);
 		

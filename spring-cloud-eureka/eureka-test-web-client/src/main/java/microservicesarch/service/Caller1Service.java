@@ -48,8 +48,9 @@ public class Caller1Service {
 			//If we allow Spring to instantiate a RestTemplate, it will hava a LoadBalancer intercerptor injected in the instance
 			//Therefore, for testing purpose,  we need to create our instance to avoid that behavior.
 			//It is important to clarify that the injected load balancer does not works as expected.(round robbin)
+			System.out.println(instanceUri.toString());
 			RestTemplate restTemplate = new RestTemplate();
-			ResponseEntity<String> response = restTemplate.getForEntity(instanceUri.toString(),String.class);
+			ResponseEntity<String> response = restTemplate.getForEntity(instanceUri.toString()+"/doSomeWork",String.class);
 			info.add(response.getBody());
 		}
 		
