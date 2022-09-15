@@ -16,7 +16,7 @@ public class Service1Controller {
 
 	@GetMapping("/doSomeWork") 
 	public ResponseEntity<String> doSomeWork() {
-		String response = "Hi, I am " + webServerAppCtxt.getId()+ " running on port " + webServerAppCtxt.getWebServer().getPort();
+		String response = System.currentTimeMillis() / 1000 + " Hi, I am " + webServerAppCtxt.getId()+ " running on port " + webServerAppCtxt.getWebServer().getPort();
 		System.out.println(response);
 		return ResponseEntity.ok(response);
 	}
