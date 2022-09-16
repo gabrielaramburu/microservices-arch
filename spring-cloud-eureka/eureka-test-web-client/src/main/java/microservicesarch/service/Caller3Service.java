@@ -23,7 +23,7 @@ public class Caller3Service {
 	@Autowired
 	private RestTemplate restTemplate;
 	
-	/* This is mandatory for managin @Retry events*/
+	/* This is mandatory for managing @Retry events*/
 	@Autowired
 	private RetryRegistry registry;
 	
