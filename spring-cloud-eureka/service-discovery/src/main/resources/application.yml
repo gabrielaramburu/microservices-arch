@@ -12,3 +12,12 @@ eureka:
     registerWithEureka: false
     fetchRegistry: false
   
+  server:
+    #Here we configure to detect once every second to drive out the invalid instance
+    eviction-interval-timer-in-ms: 1000
+    #Turn off the first level cache, let the client read directly from the second level cache, 
+    #save the synchronization time between the caches
+    use-read-only-response-cache: false
+    response-cache-update-interval-ms: 1000
+    
+    
