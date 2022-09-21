@@ -72,12 +72,12 @@ public class SleepConfiguration {
 		diff = diff / (TASK_EXECUTION_PERIOD / 1000);
 		if (diff <= 1) return 10;
 		if (diff <= 2) return 200;
-		if (diff <= 3) return 250;
-		if (diff <= 4) return 300;
-		if (diff <= 5) return 350;
-		if (diff <= 6) return 400;
-		if (diff <= 7) return 450;
-		if (diff <= 8) return 500;
+		if (diff <= 3) return 300;
+		if (diff <= 4) return 400;
+		if (diff <= 5) return 500;
+		if (diff <= 6) return 600;
+		if (diff <= 7) return 700;
+		if (diff <= 8) return 800;
 		return 1000;
 	}
 
@@ -91,7 +91,7 @@ public class SleepConfiguration {
 			log.info("Value read from json actuator metric: " + value);
 			return value;	
 		} catch (Exception e) {
-			log.error("Error trying to get the actuator metric.");
+			log.warn("Error trying to get the actuator metric.");
 			return this.previousIncomingRequestCount;
 		}
 		
