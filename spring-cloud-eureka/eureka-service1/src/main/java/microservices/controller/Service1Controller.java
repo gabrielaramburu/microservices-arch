@@ -40,7 +40,7 @@ public class Service1Controller {
 		try {
 			final Sample sample = Timer.start(meterRegistry);
 			log.info(Thread.currentThread().getName() + ", Sleeping for " + conf.getSleepPeriod());
-			Thread.currentThread().sleep(conf.getSleepPeriod());
+			Thread.sleep(conf.getSleepPeriod());
 			
 			int port =  webServerAppCtxt.getWebServer().getPort();
 			String response = System.currentTimeMillis() / 1000 + " Hi, I am " 

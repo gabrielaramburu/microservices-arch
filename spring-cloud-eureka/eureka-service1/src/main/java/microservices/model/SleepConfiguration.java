@@ -21,8 +21,7 @@ import microservices.controller.Service1Controller;
 public class SleepConfiguration {
 	private static final int TASK_EXECUTION_PERIOD = 5000;
 	
-	private int previousIncomingRequestCount;
-	private int lastIncommingRequestCount;
+	private int incomingRequestCount;
 	private int sleepPeriod;
 	
 	private static final Logger log = LoggerFactory.getLogger(SleepConfiguration.class);
@@ -33,23 +32,6 @@ public class SleepConfiguration {
 	@Autowired
 	private ServletWebServerApplicationContext webServerAppCtxt; 
 
-	
-	
-	public int getPreviousIncomingRequestCount() {
-		return previousIncomingRequestCount;
-	}
-
-	public void setPreviousIncomingRequestCount(int previousIncomingRequestCount) {
-		this.previousIncomingRequestCount = previousIncomingRequestCount;
-	}
-
-	public int getLastIncommingRequestCount() {
-		return lastIncommingRequestCount;
-	}
-
-	public void setLastIncommingRequestCount(int lastIncommingRequestCount) {
-		this.lastIncommingRequestCount = lastIncommingRequestCount;
-	}
 
 	public int getSleepPeriod() {
 		return sleepPeriod;
@@ -60,28 +42,26 @@ public class SleepConfiguration {
 	}
 
 	private void calculateSleepPeriod() {
-		this.lastIncommingRequestCount = obtainMostRecentRequestCount();
-		int diff = this.lastIncommingRequestCount - this.previousIncomingRequestCount;
 		
-		this.sleepPeriod = calculateSleepPeriod(diff);
+		obtainMostRecentRequestCount();
+		this.sleepPeriod = calculaterPeriod();
 		log.info("Config:" + this.toString());
-		this.previousIncomingRequestCount = this.lastIncommingRequestCount;
 	}
 
-	private int calculateSleepPeriod(int diff) {
-		diff = diff / (TASK_EXECUTION_PERIOD / 1000);
-		if (diff <= 1) return 10;
-		if (diff <= 2) return 200;
-		if (diff <= 3) return 300;
-		if (diff <= 4) return 400;
-		if (diff <= 5) return 500;
-		if (diff <= 6) return 600;
-		if (diff <= 7) return 700;
-		if (diff <= 8) return 800;
+	private int calculaterPeriod() {
+		int requestPerSecond = this.incomingRequestCount;
+		if (requestPerSecond <= 1) return 10;
+		if (requestPerSecond <= 2) return 200;
+		if (requestPerSecond <= 3) return 300;
+		if (requestPerSecond <= 4) return 400;
+		if (requestPerSecond <= 5) return 500;
+		if (requestPerSecond <= 6) return 600;
+		if (requestPerSecond <= 7) return 700;
+		if (requestPerSecond <= 8) return 800;
 		return 1000;
 	}
 
-	private int obtainMostRecentRequestCount() {
+	private void obtainMostRecentRequestCount() {
 		try {
 			String request = "http://localhost:" + webServerAppCtxt.getWebServer().getPort() + "/actuator/metrics/request.timed.doSomeWork";
 			log.debug(request);
@@ -89,10 +69,11 @@ public class SleepConfiguration {
 			log.debug(response);
 			int value = ((Double)JsonPath.read(response, "$.measurements[0].value")).intValue();
 			log.info("Value read from json actuator metric: " + value);
-			return value;	
+			
+			this.incomingRequestCount = value;	
 		} catch (Exception e) {
 			log.warn("Error trying to get the actuator metric.");
-			return this.previousIncomingRequestCount;
+			this.incomingRequestCount = 0;
 		}
 		
 	}
@@ -105,10 +86,9 @@ public class SleepConfiguration {
 
 	@Override
 	public String toString() {
-		return "SleepConfiguration [previousIncomingRequestCount=" + previousIncomingRequestCount
-				+ ", lastIncommingRequestCount=" + lastIncommingRequestCount + ", sleepPeriod=" + sleepPeriod + "]";
+		return "SleepConfiguration [incomingRequestCount=" + incomingRequestCount + ", sleepPeriod=" + sleepPeriod
+				+ "]";
 	}
-
 	
 	
 }
