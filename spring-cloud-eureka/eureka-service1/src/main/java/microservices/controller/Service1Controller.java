@@ -15,6 +15,7 @@ import io.micrometer.core.annotation.Timed;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.Timer;
 import io.micrometer.core.instrument.Timer.Sample;
+import microservices.aop.CustomerTimer;
 import microservices.model.SleepConfiguration;
 
 
@@ -30,15 +31,14 @@ public class Service1Controller {
 	@Autowired
 	private ServletWebServerApplicationContext webServerAppCtxt; 
 	
-	@Autowired 
-	MeterRegistry meterRegistry;
 
 	@GetMapping("/doSomeWork") 
 	@Timed("request.timed.doSomeWork")
+	@CustomerTimer
 	public ResponseEntity<String> doSomeWork() {
 		
 		try {
-			final Sample sample = Timer.start(meterRegistry);
+			
 			log.info(Thread.currentThread().getName() + ", Sleeping for " + conf.getSleepPeriod());
 			Thread.sleep(conf.getSleepPeriod());
 			
@@ -47,13 +47,6 @@ public class Service1Controller {
 					+ webServerAppCtxt.getId()+ " running on port " + port;
 			log.info(response);
 			
-			
-			if (port > 0) {
-			    sample.stop(Timer.builder("request.controller")
-	                     .tag("port", String.valueOf(port))
-	                     .register(meterRegistry));
-			}
- 			
 			return ResponseEntity.ok(response);
 			
 		} catch (InterruptedException e) {
