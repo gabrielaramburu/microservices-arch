@@ -30,10 +30,12 @@ public class CustomerTimerAspect {
 	
 	@Around("@annotation(microservices.aop.CustomerTimer)")
 	public Object measureExecutionTimeInController(ProceedingJoinPoint proceedingJointPoint) {
-		final Sample sample = Timer.start(meterRegistry);
+		
 		
 		Object value = null;
 		try {
+			final Sample sample = Timer.start(meterRegistry);
+			
 			value = proceedingJointPoint.proceed();
 			int port =  webServerAppCtxt.getWebServer().getPort();
 			if (port > 0) {
